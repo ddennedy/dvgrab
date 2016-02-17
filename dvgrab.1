@@ -1,0 +1,454 @@
+.\" This -*- nroff -*- file has been generated from
+.\" DocBook SGML with docbook-to-man on Debian GNU/Linux.
+...\"
+...\"	transcript compatibility for postscript use.
+...\"
+...\"	synopsis:  .P! <file.ps>
+...\"
+.de P!
+\\&.
+.fl			\" force out current output buffer
+\\!%PB
+\\!/showpage{}def
+...\" the following is from Ken Flowers -- it prevents dictionary overflows
+\\!/tempdict 200 dict def tempdict begin
+.fl			\" prolog
+.sy cat \\$1\" bring in postscript file
+...\" the following line matches the tempdict above
+\\!end % tempdict %
+\\!PE
+\\!.
+.sp \\$2u	\" move below the image
+..
+.de pF
+.ie     \\*(f1 .ds f1 \\n(.f
+.el .ie \\*(f2 .ds f2 \\n(.f
+.el .ie \\*(f3 .ds f3 \\n(.f
+.el .ie \\*(f4 .ds f4 \\n(.f
+.el .tm ? font overflow
+.ft \\$1
+..
+.de fP
+.ie     !\\*(f4 \{\
+.	ft \\*(f4
+.	ds f4\"
+'	br \}
+.el .ie !\\*(f3 \{\
+.	ft \\*(f3
+.	ds f3\"
+'	br \}
+.el .ie !\\*(f2 \{\
+.	ft \\*(f2
+.	ds f2\"
+'	br \}
+.el .ie !\\*(f1 \{\
+.	ft \\*(f1
+.	ds f1\"
+'	br \}
+.el .tm ? font underflow
+..
+.ds f1\"
+.ds f2\"
+.ds f3\"
+.ds f4\"
+'\" t 
+.ta 8n 16n 24n 32n 40n 48n 56n 64n 72n  
+.TH "DVGRAB" "1"
+
+.SH "NAME"
+dvgrab \(em Capture DV or MPEG-2 Transport Stream (HDV) video and audio data from FireWire
+
+.SH "SYNOPSIS"
+\fBdvgrab\fP [\fIoptions\fP] [\fIbase\fP] [-]
+
+.SH "DESCRIPTION"
+\fBdvgrab\fP is a program that captures DV or HDV (MPEG2-TS)
+video and audio data from digital camcorders via FireWire (IEEE 1394).
+The data is stored in one or several files
+and can later be processed by video editing software.
+\fBdvgrab\fP can remote control the camcorder 
+but it does not show the video's content on screen.
+.PP
+\fBdvgrab\fP also supports UVC (USB Video Class) compliant DV devices using
+Linux kernel module uvcvideo, which is a V4L2 driver. In this mode, there is
+no AV/C VTR control and therefore interactive mode is almost useless.
+interactive feature is 
+.PP
+The \fIbase\fP argument is used to construct the
+filename to store video data: \fIbase\fP-\fInum\fP.\fIext\fP.
+\fInum\fP is a running number starting from 001, and \fIext\fP is the
+file name extension specifying the file format used, e.g. avi.
+A different naming scheme is used whenever the
+\fB-timestamp\fP, \fB-timecode\fP, or \fB-timesys\fP is given (see below).
+If \fIbase\fP is a full filename
+including extension, then \fBdvgrab\fP attempts to determine the output file
+format from the extension, but it still inserts \fInum\fP.
+The default value for \fIbase\fP is "dvgrab-".
+.PP
+If you specify a trailing '-' then the format is forced to raw DV or HDV and sent to
+stdout. \fBdvgrab\fP will also output raw DV or HDV to stdout while capturing to
+a file if stdout is piped or redirected.
+.PP
+You can use \fBdvgrab's\fP powerful file writing capabilities with other programs
+that produce raw DV or HDV. Using the \fB-stdin\fP option and if \fBdvgrab\fP detects that 
+it is on the receiving end of a pipe and it is not in interactive mode,
+then it will try to read raw DV or HDV on stdin. 
+
+.SH "OPTIONS"
+Options longer than a single character can be specified with either one or two
+leading hyphens. Also, you can use a space character or equal sign to separate
+the option name and its argument value.
+
+.IP "\fB-a[\fInum\fP], -autosplit[=\fInum\fP]\fP" 10
+Try to detect whenever a new recording starts, and store it
+into a separate file. This can be combined with the \fB-frames\fP and
+\fB-size\fP options, and a split occurs whenever a specified event arises.
+Autosplit is off by default.
+.IP "" 10
+\fInum\fP is optional. Without it, \fBdvgrab\fP determines when to split using a
+flag in the stream or a discontinuity in the timecode, where timecode
+discontinuity is anything backwards or greater than one second.
+If you set the optional argument \fInum\fP you can set the time sensitivity in
+seconds and ignore the stream's new-recording flag. This basically lets you
+split on larger time increments such as minutes or hours. For example,
+\fI-autosplit=3600\fP splits the recording whenever there is a gap in the
+recording that is an hour or longer.
+
+.IP "\fB-buffers \fInum\fP\fP" 10
+The number of frames to use for buffering device I/O delays. Defaults to 100.
+
+.IP "\fB-card \fInum\fP\fP" 10
+Tells \fBdvgrab\fP to receive data from FireWire card
+\fInum\fP. The default behaviour is to automatically select the first card
+containing the first discovered camera
+If used in conjunction with \fB-noavc\fP, then no bus probing is performed
+If used in conjunction with \fB-guid\fP \fIhex\fP, then only the specified
+bus is probed for node with guid \fIhex\fP.
+
+.IP "\fB-channel \fInum\fP\fP" 10
+Isochronous channel to receive data from. Defaults to 63, which is
+pretty much standard among DV camcorders these days. If you specify anything
+different, no attempt is made at this time to tell the device which channel
+to use. You must have some manual way to tell the transmitting device which
+channel to use.
+ 
+.IP "\fB-cmincutsize \fInum\fP\fP" 10
+This option is used to start the collection if a cut occurs \fInum\fP
+megabytes (actually, mebibytes) prior to the end of the collection. This option
+reduces small files being created when using the \fB-csize\fP option. When a
+new collection is started in this manner, the amount of free space in
+the previous collection is stored, and while the following clips fit
+within the previous collection, the new collection starting point is
+reset.
+
+.IP "\fB-csize \fInum\fP" 10
+This option tells \fBdvgrab\fP to split the files when the collection
+of files exceeds \fInum\fP . This option is used to create
+collections of files that fit perfectly into \fInum\fP megabytes (actually,
+mebibytes) (i.e. for archiving onto DVD). When this occurs, a new collection is
+started (See also the \fB-cmincutsize\fP option)
+
+.IP "\fB-debug \fItype\fP\fP" 10
+Display HDV debug info, \fItype\fP is one or more of:
+all,pat,pmt,pids,pid=N,pes,packet,video,sonya1
+
+.IP "\fB-d, -duration \fItime\fP\fP" 10
+Set the maximum capture duration across all file splits for a single
+capture session (multiple sessions are possible in interactive mode).
+The \fItime\fP value is expressed in SMIL2 MediaClipping Time format.
+See http://w3.org/AudioVideo/ for the specification.
+.IP "" 10
+Briefly, the formats are:
+.IP "" 10
+XXX[.Y]h, XXX[.Y]min, XXX[.Y][s], XXXms,
+.IP "" 10
+[[HH:]MM:]SS[.ms], or smpte=[[[HH:]MM:]SS:]FF.
+
+.IP "\fB-every \fIn\fP\fP" 10
+This option tells \fBdvgrab\fP to
+write every \fIn\fP'th frame only (default all frames).
+ 
+.IP "\fB-f, -format \fIdv1\fP | \fIdv2\fP | \fIavi\fP | \fIraw\fP | \fIdif\fP | \fIqt\fP | \fImov\fP | \fIjpeg\fP | \fIjpg\fP | \fImpeg2\fP | \fIhdv\fP\fP" 10
+Specifies the format of the output file(s). File format can also be determined
+if you include an extension on the \fIbase\fP name. The following extensions
+are recognizable: avi, dv, dif, mov, jpg, jpeg, and m2t (HDV).
+
+.IP "" 10
+\fIdv1\fP and  
+\fIdv2\fP both are AVI files with slightly different formats.
+\fIdv2\fP stores a separate audio track in addition to
+the DV video track, which is more compatible with other applications.
+\fIdv1\fP only stores a single, integrated DV track since the DV format
+natively interleaves audio with video. Therefore, while \fIdv1\fP produces
+smaller output, some applications won't grok it and require \fIdv2\fP instead.
+\fBdvgrab\fP is capable of creating extremely large AVI files\(emwell over 2 or
+4 GB\(emhowever, compatibility with other tools starts to decrease over 
+the 1 GB size.
+ 
+.IP "" 10
+\fIraw\fP stores the data unmodified and have the .dv extension. These files
+are read by a number of GNU/Linux tools as well as Apple Quicktime.
+ 
+.IP "" 10
+\fIdif\fP is a variation of raw DV that names files with a .dif extension
+so they can be more immediately loaded into MainConcept MainActor5.
+ 
+.IP "" 10
+\fIqt\fP is Quicktime, but requires that dvgrab be compiled with libquicktime.
+
+.IP "" 10
+\fIjpg\fP or \fIjpeg\fP is for a sequence of JPEG image files if dvgrab was compiled with
+libdv and jpeglib. This option can only be used with a DV input, not HDV (MPEG2-TS).
+
+.IP "" 10
+\fImpeg2\fP or \fIhdv\fP is for a MPEG-2 transport stream when using, for
+example, a HDV camcorder or digital TV settop box.
+
+.IP "" 10
+Defaults to \fIraw\fP
+
+.IP "\fB-F, -frames \fInum\fP\fP" 10
+This option tells \fBdvgrab\fP to store 
+at most \fInum\fP frames per file before splitting to a new file,
+where \fInum\fP = 0 means ulimited.
+The corresponding time depends on the video system used. 
+PAL shows 25, NTSC about 30 frames per second. 
+ 
+.IP "\fB-guid \fIhex\fP\fP" 10
+If you have more than one DV device, then select one using the node's
+GUID specified in \fIhex\fP (hexadecimal) format. This is the format as
+displayed in /proc/bus/ieee1394/devices or the new kernel 2.6 /sys
+filesystem. When you specify a GUID, \fBdvgrab\fP will establish (or overlay)
+a peer-to-peer connection with the device instead of listening to the device's
+broadcast.
+If you supply a \fIhex\fP value of 1, then \fBdvgrab\fP attempts
+to discover the device as well as setup a peer-to-peer connection. This is
+especially handy with MPEG2-TS settop boxes, which typically require
+a connection management procedure to start transmitting.
+
+.IP "\fB-h, -help\fP" 10
+Show summary of options. 
+ 
+.IP "\fB-I, -input \fIfile\fP\fP" 10
+Read from \fIfile\fP instead of FireWire. You can use '-' for stdin instead
+of using \fB-stdin\fP.
+
+.IP "\fB-i, -interactive\fP" 10
+Make dvgrab interactive where single keypresses on stdin control
+the camera VTR or start and stop capture. Otherwise, dvgrab runs
+in session mode, where it immediately starts capture and stops as
+directed or interrupted (ctrl-c).
+
+.IP "\fB-jpeg-deinterlace\fP" 10
+If using \fB-format jpeg\fP, deinterlace the output by doubling the lines
+of the upper field. This is a cheap form of deinterlace that results in an
+effective 50% loss in resolution.
+
+.IP "\fB-jpeg-height \fInum\fP\fP" 10
+If using \fB-format jpeg\fP, scale the output of the height to \fInum\fP
+(1 - 2048).
+
+.IP "\fB-jpeg-overwrite \fIname\fP\fP" 10
+Write to same image file for each frame, instead of creating a sequence of
+image files.
+
+.IP "\fB-jpeg-quality \fInum\fP\fP" 10
+If using \fB-format jpeg\fP, set the JPEG quality level from 0 (worst) to 
+100 (best).
+
+.IP "\fB-jpeg-temp \fIname\fP\fP 10
+Use a temporary file to create the jpeg, rename the file to the target file
+name when done. Useful when using dvgrab with \fB-jpeg-overwrite\fP for
+generating a webcam image.
+
+.IP "\fB-jpeg-width \fInum\fP\fP" 10
+If using \fB-format jpeg\fP, scale the output of the width to \fInum\fP
+(1 - 2048).
+
+.IP "" 10
+The JPEG scaling width and height must be both either less than or greater
+than the normal frame size. For example, the scaled size of 700 wide by
+525 high yields a nice 4:3 aspect image with square pixels, but it is illegal
+for NTSC because 700 is less than the normal width of 720 while the height is
+greater than the normal height of 480.
+
+.IP "" 10
+Since DV uses non-square pixels, it is nice to be able to scale to an image
+based upon a 4:3 aspect ratio using square pixels. For NTSC, example sizes are
+800x600, 640x480, and 320x240. For PAL, example square pixel sizes are 384x270
+and 768x540.
+
+.IP "\fB-jvc-p25\fP" 10
+Remove repeat_first_field flag and set frames per second to 25 to correct a
+stream recorded in JVC's HDV P25 mode.
+
+.IP "\fB-lockstep\fP" 10
+Align capture to a multiple of \fB-frames\fP based on timecode.
+This is useful for redundancy, when more than one machine is capturing
+from the same FireWire device, and you want to ensure each file contains
+the same footage. To ensure the files from each machine have the same name
+use the \fB-timecode\fP option and the same \fIbase\fP name.
+
+.IP "\fB-lockstep_maxdrops \fInum\fP\fP" 10
+If \fInum\fP frames are dropped consecutively, then close the file and resume
+capture on the next lockstop interval. If \fInum\fP is -1, then permit an
+unlimited number of consecutively dropped frames; this is the default.
+
+.IP "\fB-lockstep_totaldrops \fInum\fP\fP" 10
+If \fInum\fP frames are dropped in the current file, then close the file and
+resume capture on the next lockstep interval. If \fInum\fP is -1, then permit
+an unlimited number of total dropped frames; this is the default.
+
+.IP "\fB-noavc\fP" 10
+Disable use of AV/C VTR control. This is useful if you are capturing 
+live video from a camera because in camera mode, an AV/C play command
+tells the camera to start recording, perhaps over material on the current tape.
+This applies to either interactive more or non-interactive because
+non-interactive stills sends a play and stop to the VTR upon capture start
+and stop.
+
+.IP "\fB-nostop\fP" 10
+Disables sending the AV/C VTR stop command when exiting \fBdvgrab\fP.
+
+.IP "\fB-opendml\fP" 10
+If using \fB-format dv2\fP, create an OpenDML-compliant type 2 DV AVI. This
+is required to support dv2 files >1GB. dv1 always supports files >1GB.
+
+.IP "\fB-r, -recordonly\fP" 10
+When the camcorder is in record mode, this option causes \fBdvgrab\fP to only
+capture when the camcorder is recording and not paused. Normally, when in
+record mode, dvgrab always captures to let you use the camcorder purely as
+a camera where the computer operator is in control. This option makes dvgrab
+act like the VCR where the camera operator controls when capture takes place.
+This is very handy when used with the \fB-autosplit\fP option to automatically
+create a new file for each shot.
+This option requires AV/C and will not work with the \fB-noavc\fP option.
+
+.IP "\fB-rewind\fP" 10
+Rewind the tape completely to the beginning prior to starting capture.
+Naturally, this requires AV/C; however, perhaps not so obvious is that this
+does not apply to interactive mode.
+
+.IP "\fB-showstatus\fP" 10
+Normally, the capture status information is displayed after finished writing
+to each file. This option makes it show the capture status during capture,
+updated for each frame.
+
+.IP "\fB-s, -size \fInum\fP\fP" 10
+This option tells \fBdvgrab\fP to store at most \fInum\fP megabytes (actually,
+mebibytes) per file, where \fInum\fP = 0 means unlimited file size for large
+files. The default size limit is 1024 MB.
+
+.IP "\fB-srt\fP" 10
+Generate subtitle files containing the recording date and time in SRT 
+format. For each video file that is created two additional files with the 
+extension .srt0 and .srt1 are created. They contain the recording date and 
+time as subtitles in the SRT format. The .srt0 file contains the subtitles 
+with timing based on the running time from the start of the current file. 
+Use this file if you transcode to a format like AVI. The .srt1 file contains 
+the subtitles with timing based on the time code as delivered by the camera. 
+The mplayer program understands this type of subtitles.
+
+.IP "\fB-stdin\fP" 10
+Read the DV stream from a pipe on stdin instead of FireWire.
+ 
+.IP "\fB-timecode\fP" 10
+Put the timecode of the first frame of each file into the file name.
+ 
+.IP "\fB-t, -timestamp\fP" 10
+Put information on date and time of recording into file name. 
+ 
+.IP "\fB-timesys\fP" 10
+Put system rather than recording date and time into file name.
+This is useful when using converter devices that do not change the recording
+date time in the DV stream.
+
+.IP "\fB-V, -v4l2\fP" 10
+Capture from a USB Video Class (UVC) device that supports DV.
+This uses the uvcvideo kernel module via V4L2.
+The default device file is /dev/video. Use the \fB-input\fP option
+to set a different device file.
+ 
+.IP "\fB-v, -version\fP" 10
+Show version of program.
+
+.IP "\fB-24p\fP" 10
+For Quicktime DV, set the frame rate as 24 fps in the Quicktime file.
+This only works as expected when the video has been shot in 24p mode.
+
+.IP "\fB-24pa\fP" 10
+For Quicktime, DV, in addition to setting the frame rate to 24 in the Quicktime
+file, also reverse the 2:3:3:2 pulldown process by removing the interlaced "C"
+frame. This only works as expected when the video has been shot in 24p Advanced
+mode. See http://www.adamwilt.com/24p/
+
+.SH "EXAMPLES"
+
+.IP "\fBdvgrab foo-\fP" 10
+Captures video data from the default FireWire source
+and stores it to files \fBfoo-001.avi\fP,
+\fBfoo-002.avi\fP, etc. 
+ 
+.IP "\fBdvgrab -frames 25 foo-\fP" 10
+Assuming a PAL video source, this command records one 
+second's worth of video data per file. 
+ 
+.IP "\fBdvgrab -autosplit -frames 750 -timestamp foo-\fP" 10
+Records video data from the default FireWire source, cuts it into
+chunks of 30 seconds (assuming PAL) or when a new recording starts and
+names the resulting files according to date and time info in the
+videostream.
+
+.IP "\fBdvgrab -autosplit -size 1998 -csize 4400 -cmincutsize 10  foo-\fP" 10
+Records video data from the default FireWire source, cuts it into
+chunks when a new recording starts or when the current file exceeds
+1998 megabytes (actually, mebibytes), or the current collection of files
+exceeds 4400 megabytes. It also reduces the size of the smallest file made
+due to a collection size cut to 10 megabytes.
+
+.IP "" 10
+This option is perfect for backing up DV to DVD's as 2 Gb is around
+the maximum file size that (the current) linux implementation of the
+ISO9660 filesystem can handle!
+
+.IP "" 10
+Warning: It is possible to make ISO9660 filesystems with files greater
+than 2 Gb, but the current linux IS09660 driver can't read them! Newer
+linux kernels may be able to handle ISO9660 filesystems with filesizes
+greater than 2 Gb.
+
+.IP "\fBdvgrab -format hdv -autosplit\fP" 10
+Capture from a HDV camcorder.
+ 
+.IP "\fBdvgrab -format mpeg2 -guid 1\fP" 10
+Record from a digital TV settop box.
+
+.IP "\fBdvgrab -jpeg-over -jpeg-w=320 -jpeg-h=240 -d smpte=1 webcam.jpeg\fP" 10
+Capture a single frame, save it as a JPEG named webcam.jpg and exit.
+This example also demonstrates option handling. You only need to specify enough
+of a long option name to uniquely identify it. You can use space or equal sign
+to separate option name and argument. The file format is inferred from the
+filename extension. Also, since \fB-jpeg-overwrite\fP is used, the filename will be
+exactly "webcam.jpeg" and not include any numbers.
+ 
+.IP "\fBdvgrab -V\fP" 10
+Capture over USB from a UVC compliant DV device.
+ 
+.IP "\fBdvgrab -v4l -input /dev/video1\fP" 10
+Capture over USB from a UVC compliant DV device using device file /dev/video1.
+ 
+.IP "\fBdvgrab -format=hdv -autosplit=28800 -srt foo-\fP" 10
+Capture from a HDV camcorder, splitting whenever there is a gap in the recording
+that lasts longer than 8 hours. This will likely generate a separate file for each
+day (useful for holiday videos). It will also generate subtitle files. Assuming
+that the files foo-001.m2t and foo-002.m2t are generated, the corresponding
+subtitle files will be foo-001.srt0, foo-001.srt1 and foo-002.srt0, foo-002.srt1.
+You can use the subtitle files to show the recording date and time while viewing
+the video.
+
+.SH "AUTHOR" 
+Dan Dennedy <dan@dennedy.org> and Daniel Kobras kobras@debian.org>
+.PP
+See http://www.kinodv.org/ for more information and support.
+ 
+...\" created by instant / docbook-to-man, Wed 13 Dec 2000, 17:30

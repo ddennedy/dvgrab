@@ -1,0 +1,259 @@
+dvgrab R E L E A S E   N O T E S
+
+-------
+v3.5
+-------
+* Automatically detect DV vs. HDV when not using -noavc, -input, or -stdin.
+* Now waits indefinitely for DV or HDV instead of giving up after 10 seconds.
+* Bugfixes
+
+-------
+v3.4
+-------
+* Fix a showstopping bug in the v3.3 release
+
+-------
+v3.3
+-------
+* Give different warnings for dropped versus damaged frames
+* Bugfixes
+
+-------
+v3.2
+-------
+* New -srt option to write subtitle files containing recordind date/time
+* New -recordonly (-r) option for use with camcorder record (camera) mode
+* New -rewind option to rewind tape to beginning before starting capture
+* Added automatic stop capture at end of tape
+* Added optional seconds argument to autosplit
+* Improved autosplit
+* Bugfixes and updated documentation
+
+-------
+v3.1
+-------
+* New -jvc-p25 option to post-process JVC P25 streams for interoperability
+* Fix regression on broken pipe output
+* Improved HDV handling
+* New -24p and -24pa options for Quicktime DV for 24 fps modes
+
+-------
+v3.0
+-------
+* Add HDV (MPEG2-TS) support (-f hdv)!
+* Add USB DV support (-v4l2)
+* Simpler and more flexible option parsing
+* Bugfixes and updated documentation
+
+-------
+v2.1
+-------
+* Add feature to not capture/write-to-file when device is paused while in
+  recording mode. This depends upon the device sending timecode as all
+  zeroes while in that state.
+* Changed --jpeg-overwrite so it does not generate a sequentially numbered
+  filename or filename containing recording date or timecode. This makes
+  dvgrab work nicely with StopMotion (http://stopmotion.bjoernen.com/).
+* Bugfixes with dropped frame counting and quicktime support.
+
+-------
+v2.0
+-------
+This release exclusively uses the new third generation Linux IEEE 1394 capture
+API available in raw1394 and libiec61883. The libiec61883 provides a protocol-
+specific layer over the raw foundation. This new approach is both robust and
+simpler than using protocol-specific kernel modules such as dv1394. As a result,
+dvgrab 2.0 requires Linux kernel 2.4.20 or newer.
+
+Usage of the connection management procedures in libiec61883 also makes it
+rather easy to capture from multiple DV devices on the same bus by using the
+--guid option. This feature is not entirely foolproof due to the inconsistency
+of implementations of devices, but you can try. Most devices are only running
+at 100mbps speed, which limits it to two DV streams per bus. However, through
+dip switches or the output master plug register, some devices can run at 200 or
+400 and therefore more streams can exist on the bus. For example, I have tested
+four Canopus ADVC-500 devices on a single bus using the connection management
+procedures. Also, multiple host adapters are transparently supported when using
+the --guid option.
+
+Like dvconnect, now dvgrab will schedule with realtime scheduling policy and
+lock all memory resident to prevent paging when run with super user permission.
+
+New options "--lockstep" and "--timecode" can be used together to provide a
+redundant capture system where multiple Linux hosts can capture from the
+same bus without knowledge of each other and still produce output files with 
+the same name for the same segment of video.
+
+-------
+v1.7
+-------
+This release fixes a few bugs related to deadlocks when stopping a dv1394 
+capture and file permissions. Also, --duration should be slightly more accurate
+especially for specifying 1 frame: --duration smpte=:::1.
+
+P.S. You can capture a specific number of frames using --duration smpte=:::X
+whereas the --frames option is used for file splitting.
+
+-------
+v1.6
+-------
+This is an enhancement release with some bug and compilation fixes. New options
+are --timesys for timestamping filenames using the system date and time, 
+and --csize, and --cmincutsize for fine-grained control over sizes of 
+collections of files useful for creating archives to CD or DVD.
+
+-------
+v1.5
+-------
+
+This is a bugfix release. There were bugs in the AVI file creation especially
+for files near or greater than 1GB. Also, the --every option was broken in
+the past 2 releases. There are also changes to make dvgrab behave nicer when
+a camera is in camera mode rather than VTR mode. Finally, --autosplit is
+enhanced to check timecode discontinuity as well as the special flag in the
+DV stream.
+
+
+----
+v1.4
+----
+This is mainly a bugfix release. To prevent issues with dvgrab running in a
+non-interactive shell script, dvgrab now requires the --stdin option to
+read DV from a pipe. Also, option --noavc was added to prevent any attempt
+to control the camera, which is especially useful if you are capturing from
+your device in camera mode as opposed to VTR mode. Another new option --guid
+lets you select from more than one device by its GUID (see
+/proc/bus/ieee1394/devices to lookup a GUID). Finally, some changes were made
+in the AVI file to reduce memory consumption on very large file captures and
+to prevent occasional segfaults.
+
+----
+v1.3
+----
+This is a major release prepared by Dan Dennedy that adds AV/C control and
+an interactive mode. The default mode of operation is non-interactive to 
+prevent breaking existing users' scripts. However, dvgrab 1.3 will issue
+an AV/C command to tell the camera VTR to start playing. Therefore, dvcont
+may no longer be required. However, heed caution! If your camera is not in VTR
+mode, but is in camera mode, the play command tells the camera to start 
+recording!
+
+One enters interactive mode by supplying the -i or --interactive options.
+From there, the command prompt describes the single key presses available
+to control the camera and start/stop capture.
+
+All dvgrab 1.3 messages are written to stderr (normally connected to your
+terminal so you can see them) and include a consistent, easy-to-parse format 
+for status, event, and error messages.
+
+dvgrab 1.3 can also write raw DV to stdout while simultaneously capturing to 
+a file. This behavior is automatic when you redirect stdout or pipe the command.
+This is especially nice with recent versions of Xine and mplayer as they
+can display DV with deinterlacing and adjusting for the non-square pixel aspect
+ratio of DV. For example,
+dvgrab -i | xine -D stdin://#demux:rawdv
+
+The last part of the Xine MRL in the line above is important; otherwise, xine
+does not know the data format of the pipe!
+
+All of the above means one can build a user interface frontend (non-GPL even)
+to dvgrab by fork()ing and exec()ing dvgrab with pipes established between the
+frontend and dvgrab.
+
+Building upon the pipe capabilities, in non-interactive mode dvgrab 1.3 accepts
+raw DV on stdin. If detected, dvgrab forgoes any 1394-based capture method.
+This allows one to leverage the file format writing and splitting options of
+dvgrab in conjunction with raw DV producers such as smilutils and ffmpeg.
+
+A grand new option is --duration, which specifies a maximum duration for
+an entire capture session regardless of splitting. Furthermore, the argument
+to this option is specified in SMIL2 time value formats, which is quite
+expressive. Note, that in interactive mode, starting capture starts a new
+session. Thus, in interactive mode, you can have multiple capture sessions
+by stopping and re-starting.
+
+Additional changes include some friendlier defaults and automatic options.
+dvgrab 1.3 will look on all your 1394 buses/host adapters for your camera
+without the explicit --card opion. It selects the first camera discovered.
+Type 2 AVI is now the default file format for increased compatibility with
+other applications. Now, supplying --frames and --size options that cause
+dvgrab to generate an AVI >1GB automatically enables the --opendml option.
+Finally, the base filename argument is optional now too and defaults to
+"dvgrab-".
+
+----
+v1.2
+----
+
+This release is a major new release prepared by Dan Dennedy that pulls in
+much of what improved upon in Kino plus more.
+
+AVI file correctness and compatibility has been improved upon. 
+1.1 beta releases allowed one to specify small and large indexes.
+This is no longer required; it is automatic now based upon general
+practice observed in AVIs created by other applications. Instead, 
+now there is a new --opendml option for use with type 2 DV AVI 
+(--format dv2).
+
+OpenDML is a specification of AVI extensions created by Matrox in
+collaboration with others and approved by Microsoft. OpenDML 
+introduced a new index structure, which dvgrab 1.1 called the 
+"large" index. Type 1 DV AVI (dv1) is inherently OpenDML,
+and it contains a large index only. dvgrab 1.2 type 2 always contain 
+a small index, but OpenDML adds a large index to permit type 2 AVIs 
+greater than 1GB. 
+
+The main difference between a type 1 and type 2 file is that a type 2 
+contains a separate audio stream extracted from the DV. dvgrab 1.2
+can use libdv (must be detected when compiled) to create this audio stream
+instead of using internal routines. There are several advantages of 
+using libdv the most obvious being audio block error handling. Without
+error handling, one can hear "bleeps" in the audio stream.
+
+Raw DV capture has been improved to prevent corrupt files in the event of
+a dropped firewire packet. Also, one can send raw DV to stdout instead
+of to a file, so it can be used in pipes. This is especially useful with
+smilutils. For example, one can preview video with libdv's playdv utility:
+dvgrab - | playdv --no-mmap
+The '-' file designation forces the format to raw overridding whatever
+you specify; the other formats are not streaming formats.
+
+Support for Quicktime has been added if libquicktime is detected when
+compiled. Use "--format qt." It creates a separate audio track in twos
+complement format.
+
+Support for JPEG has been added if jpeglib is deteced when compiled.
+Use "--format jpeg" to save a series of sequentially numbered JPEG
+still images. There are two number parts of the filename, the first number
+is increments with each scene change while the second number increments
+with each successive save. Use --jpeg-overwrite to continually update the
+same file and not add any numbers to the file name stem you provide. The
+JPEG option works nicely with the --every option.
+
+There are several JPEG options you will find handy. First, is --jpeg-quality
+followed by a number between 0 and 100; the default is 75.
+--jpeg-deinterlace extracts one of the fields and doubles it for a cheap
+form of deinterlacing. However, when used with the scaling options 
+--jpeg-width and --jpeg-height to reduce the resolution by 50%, 
+you can get perfect deinterlaced output. The scaling
+options also allow one to compensate for the non-square pixels of DV.
+For example, on NTSC, the following produces nice output for a webcam,
+dvgrab --format jpeg --jpeg-deinterlace --jpeg-width 320 --jpeg-height 240
+
+Due to code refactorization, all capture options work with all formats.
+For example, previous versions of dvgrab did not support hardly any
+options like --autosplit, --every, --timestamp, and --frames when used
+with --format raw. 
+
+A new capture option --size followed by a number in mega bytes, sets 
+the maximum file size of any captured file.
+
+If all this were not enough; dvgrab 1.2 also supports capture using the 
+new dv1394 driver! See http://www.linux1394.org/dv1394.html for more
+information on this driver. By default and traditionally, dvgrab uses 
+raw1394; however, raw1394 requires an interrupt for each packet, which
+can be too intense for some systems. dv1394 in kernel releases 2.4.21 or
+recent linux1394.org Subversion snapshots drastically reduce the IRQ and
+using kernel background threads and internal buffering. You must use the
+--dv1394 option followed by the device file name to use dv1394 instead
+of raw1394.

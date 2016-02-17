@@ -1,0 +1,711 @@
+dvgrab ChangeLog
+(c) 2000-2003 Arne Schirmacher dvgrab@schirmacher.de
+(c) 2002-2009 Dan Dennedy <dan@dennedy.org>
+
+SEE the NEWS file for RELEASE NOTES!
+
+----- v3.5 released -----
+
+2009-09-07  Dan Dennedy <dan@dennegy.org>
+	- iec13818-1.{h,cc}, iec13818-2.{h,cc}: apply patch from Arren to remove
+	  compiler warnings (2804114).
+	- filehandler.cc: apply fix to undefined return value in
+	  QtHandler::GetFileSize() from Arren (2813664).
+	- dvgrab.cc: remove (H)DV timeout and replace with "Waiting" message per
+	  Carl Karsten's suggestion.
+	- filehandler.cc: apply patch from Marcel Mol to allow both -timecode
+	  and -timestamp or -timesys (2706278).
+	- ieee1394io.cc: fix deadlock on SIGINT/SIGTERM with -stdin
+	  or -input(2460025).
+
+2009-04-10  Dan Dennedy <dan@dennegy.org>
+	- main.cc: apply patch from Jarod Wilson to set retval to 1 if we get
+	  an error, to make life easier for folks who wrap dvgrab to tell if
+	  something went wrong (rhbz #486061).
+	- error.cc, smiltime.cc: apply patch from Jarod Wilson to fix build
+	  on gcc 4.4.
+	- ieee1394io.{h,cc}: added AVC:isHDV().
+	- dvgrab.cc: try to automatically detect HDV devices and set file format.
+
+----- v3.4 released -----
+
+2009-02-14  Dan Dennedy <dan@dennegy.org>
+	- main.cc: bugfix failure to start due to regression in 3.3.
+
+----- v3.3 released -----
+
+2009-01-14  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.{h,cc}, dvgrab.{h,cc}: separate the warnings for dropped
+	  versus damaged frames.
+	- main.cc: silence warnings about inability to change scheduling class
+	  and lock memory.
+	- ieee1394io.cc: return false on invalid timecode in AVC::Timecode().
+	- io.c: read terminal every 125ms instead of 1s.
+	- dvgrab.cc: in interactive mode display invalid timecode as
+	  "--:--:--:--" instead of "ff:ff:ff:ff" and suppress filename when
+	  no capture is in progress instead of displaying "stdout".
+	- dvgrab.cc: reduce the frequency of AVC::TransportStatus calls making
+	  it consistently every ~125ms.
+	- filehandler.cc: remove "deprecated conversion from string constant"
+	  warnings.
+	- dvgrab.{cc,1}: add 'avi' as alias for dv2 and 'mov' as alias for qt.
+
+2009-01-04  Dan Dennedy <dan@dennedy.org>
+	- dvframe.cc, filehandler.cc: bugfix compilation errors when not using
+	  libdv due to missing includes.
+
+2008-11-25  Dan Dennedy <dan@dennedy.org>
+	- v4l2reader.cc: bugfix (2337246) hang on interrupting capture with no
+	  valid data received. Also, bugfix double free on exit.
+	- most files: updated copyrights.
+	- dvgrab.1: fix (2313429) missing hyphens.
+
+2008-11-19  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: bugfix (2313380) premature exit/stop capture when using
+	  live/record mode - this time to cover more use cases.
+
+2008-11-18  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: bugfix (2313380) premature exit/stop capture when using
+	  live/record mode on device instead of VCR and not using -record
+	  option.
+
+2008-11-09  Dan Dennedy <dan@dennedy.org>
+	- filehandler.cc: bugfix -timestamp option not putting file extension
+	  on filename.
+
+
+----- v3.2 released -----
+
+2008-08-04  Dan Dennedy <dan@dennedy.org>
+	- filehandler.{h,cc}, dvgrab.{h,cc}, dvgrab.1, srt.{h,cc}: apply patch
+	  from Pelayo Bernedo to add -srt option and optional arg to -autosplit
+	  to perform splits on gaps in recording date/time.
+
+2008-07-24  Dan Dennedy <dan@dennedy.org>
+	- filehandler.cc: bugfix autosplit not detecting timecode discontinuity
+	  when timecode reverses a small amount - any backwards timecode event
+	  should be considered discontinuous.
+	- configure.in, Makefile.am, config.h.in: switch to pkg-config for
+	  libavc1394-related build stuff.
+
+2008-07-22  Dan Dennedy <dan@dennedy.org>
+	- filehandler.cc: bugfix autosplit not detecting timecode discontinuity
+	  when timecode resets or jumps way back in time.
+	- dvgrab.cc, ieee1394io.cc, raw1393util.c: bugfix memory leaks reported
+	  by valgrind.
+	- filehandler.cc, smiltime.cc, stringutils.cc: set std::ends on 
+	  stringstreams in case it helps.
+
+2008-07-02  Dan Dennedy <dan@dennedy.org>
+	- dvframe.cc, dvgrab.cc: apply patches from Patrick Mansfield to prevent
+	  stack corruption on invalid DV timecodes.
+
+2008-02-26  Dan Denendy <dan@dennedy.org>
+	- dvgrab.cc: bugfix short option '-a' not working.
+	- dvgrab.{h,cc,1}: added -recordonly (short -r ) option.
+	- dvgrab.{h,cc}: added ability to stop capture at end of tape.
+	- dvgrab.{h,cc,1}: added -rewind option to fully rewind tape before capture.
+	- filehandler.cc: fix reporting bogus file size.
+	- apply patch from Jarod Wilson/Red Hat to fix compilation with gcc 4.3.
+
+2007-12-11  Dan Denendy <dan@dennedy.org>
+	- filehandler.cc: bugfix frame dropping with -24pa option.
+
+
+----- v3.1 released -----
+
+2007-12-04  Dan Denendy <dan@dennedy.org>
+	- filehandler.{h,cc}, dvgrab.{h,cc}, dvgrab.1:
+	  Apply 24p patch from Joe Stewart/CinCVS which adds -24p and -24pa
+	  options for Quicktime DV output:
+	  https://init.linpro.no/pipermail/skolelinux.no/cinelerra/2006-October/008095.html
+
+2007-11-21  Dan Dennedy <dan@dennedy.org>
+	- filehandler.cc: apply patch to fix writen returning -1 on failure.
+	- riff.{h,cc}, dvgrab.{h,cc}, iec13818-2.cc, ieee1394io.h,
+	  v4l2reader.{h,cc}: add const to char* to reduce compiler warnings.
+
+2007-11-12  Dan Dennedy <dan@dennedy.org>
+	- iec13818-1.cc: bugfix (1828106) transport_scrambling_control() not
+	  returning value.
+
+2007-11-06  Dan Dennedy <dan@dennedy.org>
+	- hdvframe.{h,cc}: apply patch from Lars Täuber to fix P25 detection.
+
+2007-11-01  Dan Dennedy <dan@dennedy.org>
+	- hdvframe.h: apply patch 1823641 to address bug 1773826 and prevent
+	  message "ERROR: too much carryover data."
+	- filehandler.{h,cc}, dvgrab.{h,cc}, frame.h, hdvframe.{h,cc}, dvgrab.1:
+	  apply patch from Lars Täuber to process JVC P25 mode HDV (-jvc-p25).
+	- error.h, iec13818-2.{h,cc}: apply patch 1823069 from Dan Streetman to
+	  improve HDV debug logging. The [S] slice debugging is compacted into
+	  [S*n]; the default DEBUG does a newline now instead of a \r (i.e. it
+	  preserves the previous debug output on the screen); the GOP Dump()
+	  method has a fix in the format string.
+	- dvgrab.1, dvgrab.cc: address bug 1810616 by using mebibyte and MiB.
+	- dvgrab.cc: bugfix 1810641 by not using lockstep unless a value greater
+	  than zero is supplied for -frames.
+	- dvgrab.h: bugfix default format to raw.
+	- ieee1394io.{h,cc}: bugfix segfault on StopThread() on reported by
+	  Jarod Wilson.
+	- ieee1394io.{h,cc}: bugfix assertion in libiec61883 - removed union in
+	  iec61883Reader to keep it simple.
+
+2007-09-11  Dan Dennedy <dan@dennedy.org>
+	- filehandler.cc: apply patch from David Arendt to fix potential data loss
+	  due to short write on raw DV and MPEG2-TS files.
+	- ieee1394io.cc: bugfix hang at end of reading from stdin.
+
+2007-09-04  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: bugfix pipe output in conjunction with file capture.
+
+2007-08-30  Dan Dennedy <dan@dennedy.org>
+	- configure.in: added explicit --with options to suppress dependencies
+	  on libdv, libquicktime, and libjpeg.
+	- dvframe.h: fix broken compilation without libdv.
+
+
+----- v3.0 released -----
+
+2007-08-06  Dan Dennedy <dan@dennedy.org>
+	- configure.in, v4lreader.{h,cc}, dvgrab.cc: fix compiling without
+	  linux/videodev2.h.
+	- iec13818-2.cc: bugfix virtual infinite loop while parsing mpeg2
+	  visual sequence end packet.
+
+2007-07-28  Dan Dennedy <dan@dennedy.org>
+	- dvframe.h: define CLAMP if not building with libdv.
+	- dvgrab.1, dvgrab.h: change default DV file format to raw.
+	- dvgrab.1, v4l2reader.{h,c}, dvgrab.cc: add support for DV-over-USB
+	  (linux uvcvideo) with new -v4l2 option.
+
+2007-07-08  Dan Dennedy <dan@dennedy.org>
+	- stringutils.{h,cc}: added toUpper and toLower methods.
+	- dvgrab.{h,cc}, dvgrab.1: infer format from filename extension.
+	- dvgrab.cc, dvgrab.1: sort the options, document more options, add more
+	  short options.
+
+2007-07-06  Dan Dennedy <dan@dennedy.org>
+	- avi.{h,cc}, dvframe.{h,cc}, dvgrab.{h,cc}, error.{h,cc},
+	  filehandler.{h,cc}, frame.{h,cc}, hdvframe.{h,cc}, iec13818-1.{h,cc},
+	  iec13818-2.{h,cc}, ieee1394io.{h,cc}, main.cc: apply patch 1703694
+	  from Dan Streetman adding HDV support.
+	- dvgrab.{h,cc}, filehandler.cc, frame.h, hdvframe.{h,cc},
+	  iec13818-1.{h,cc}, iec13818-2.{h,cc}: apply patch 1705146 from Dan
+	  Streetman improving mpeg2ts timecode parsing.
+	- dvgrab.cc, error.{h,cc}, hdvframe.cc, iec13818-1.{h,cc}, iec13818-2.cc,
+	  main.cc: apply patch 1705292 from Dan Streetman to enhance mpeg2ts
+	  parser debug logging.
+	- dvgrab.cc: remove --dv and --hdv, making hdv usage automatic via
+	  --format mpeg2 with mpeg2ts or hdv as aliases.
+	- dvgrab.cc, dvgrab.1: use getopt_long_only to allow single hyphen in 
+	  addition to double hyphen.
+	- dvgrab.cc, filehandler.cc: regression bugfixes
+	- raw1394util.c: add discovery of Motorola DCT setop boxes (mpeg2-ts).
+	- dvgrab.1, dvgrab.cc, raw1394util.{h,c}: improve support for settop
+	  boxes with -guid=1, which discovers AND sets up p2p connection. Also,
+	  reset bus prior to exit and suggest retry upon timeout on mpeg2ts.
+	- dvgrab.cc: bugfix off-by-one in -duration handling.
+
+2007-01-14  Dan Dennedy <dan@dennedy.org>
+	- filehandler.{h,cc}, dvgrab.{h,cc}, dvgrab.1: apply patch (bug 1629632)
+	  from Koen Martens to accept a temporary file in jpeg-overwrite mode
+	  and then rename to target file. This prevents other apps (web server,
+	  stopmotion) from receiving partial images.
+	- dvgrab.cc: ignore timecode for detecting pause in jpeg-overwrite mode.
+
+
+----- v2.1 released -----
+
+2006-12-19  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: do not capture frames with zero timecode. My camera sends
+	  zero timecode when paused in recording mode. Maybe yours does too.
+	- filehandler.{h,cc}: do not change filename in --jpeg-overwrite mode.
+	  Only appends extension to base name if extension not in base. Does not
+	  put numbers or timecode or other into filename.
+
+2006-03-03  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.1: remove GNU FDL license from man page upon request by Daniel
+	  Kobras.
+	- configure.in, Makefile.am, filehandler.h: improve building against 
+	  libquicktime.
+	- filehandler.cc: bugfix usage of private member of quicktime4linux API.
+	- avi.h, avi.cc: prevent macro name clash on AVI_INDEX_OF_... with 
+	  quicktime4linux qtprivate.h.
+
+2005-09-25  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.h, ieee1394io.cc: drop the GetIncompleteFrames method.
+	- ieee1394io.cc: set the number of bytes in Frame() based upon info
+	  from libiec61883 to properly detect incomplete state in Frame object.
+	- dvgrab.cc: bugfix incomplete frame handling so as to not drop a complete
+	  frame due to an asynchronous IEEE1394Reader::GetIncompleteFrames
+	  event. Instead, rely soley upon the fixed Frame::IsComplete.
+
+----- v2.0 released -----
+
+2005-04-08  Dan Dennedy <dan@dennedy.org>
+	- main.cc: apply realtime and priority scheduling and memory locking as
+	  used in dvconnect.
+	- riff.cc, riff.h, avi.cc, avi.h, endian_types.h (added): make RIFF
+	  and AVI classes endian and architecture safe (Daniel Kobras).
+
+2005-03-29  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: added lockstep_maxdrops and lockstep_totaldrops options.
+
+2005-03-25  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.cc: separate dropped from incomplete frames;
+	  remove mutex lock in iec61883Reader::StopThread to prevent deadlock
+	  on exit;
+	  update iec61883Connection to libiec61883 API changes.
+	- dvgrab.cc: reorganize capture thread method;
+	  make lockstep repeat frames when frames are dropped rather than truncate.
+
+2005-03-21  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: ensure cleanup and error reporting on failure after a bus
+	  reset.
+
+2005-02-07  Dan Dennedy <dan@dennedy.org>
+	- smiltime.h, smiltime.cc: added parseSmpteNtscDropValue()
+	- dvgrab.cc: use proper timecode parser for NTSC drop-frame to fixup
+	  lockstep.
+
+2005-02-04  Dan Dennedy <dan@dennedy.org>
+	- added --lockstep option
+
+2005-01-31  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: disable some erroneous usage of some AV/C commands that
+	  interferes with bus reset handling and --nostop.
+	- dvgrab.cc: reduce timeout to 1 second in bus reset handler.
+
+2005-01-27  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.h, ieee1394io.cc: add an optional seconds parameter to 
+	  IEEE1394Reader::WaitForAction() and add iec61883Connection::Reconnect()
+	  that uses new libiec61883 function.
+	- dvgrab.cc: do not issue AV/C pause when not interactive and use 
+	  WaitForAction in bus reset watchdog thread. 
+	- ieee1394io.h, ieee1394io.cc, dvgrab.cc: added iec61883Connection::CheckConsistency()
+
+2005-01-26  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.cc, ieeee1394io.h, dvgrab.cc, dvgrab.h: check for DV in a
+	  watchdog thread upon bus reset.
+
+2005-01-25  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc, dvgrab.h: disable sending raw dv to stdout when stdout is
+	  not a tty unless '-' is on command line. 
+	- dvgrab.cc, dvgrab.h: added --nostop to prevent sending AV/C stop 
+	  command on exit.
+	- filehandler.cc, dvgrab.cc, dvgrab.1: added --timecode option.
+
+2004-12-11  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.cc, dvgrab.cc: drop legacy raw1394 and dv1394 capture and add
+	  libiec61883 support with connection management.
+
+2004-12-07  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: fix display of --dv1394 option in usage report.
+
+
+----- v1.7 released -----
+
+2004-11-29  Dan Dennedy <dan@dennedy.org>
+	- configure.in: remove unnecessary check for dv1394.h
+	- ieee1394io.cc: remove libraw1394 0.8 compatibility cruft
+	- dvgrab.cc: make duration option more accurate
+
+2004-10-26  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.1: correct the --frames example.
+
+2004-08-21  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.cc: cleanup reception thread cancellation issues by removing 
+	  blocking 1394 I/O calls
+
+2004-08-16  Dan Dennedy <dan@dennedy.org>
+	- remove debian directory
+	- ieee1394io.cc: bugfix deadlock on stop capture for dv1394
+
+2004-08-12  Dan Dennedy <dan@dennedy.org>
+	- smiltime.cc: bugfix indefinite state
+
+
+----- v1.6 released -----
+
+2004-07-21  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.{h,cc}, filehandler.{h,cc}, dvgrab.1: added --timesys option --
+	  similar to --timestamp but using system time instead.
+
+2004-07-13  Dan Dennedy <dan@dennedy.org>
+	- dv1394.h: added since no longer in libdv
+	- ieee1394io.cc: prevent potential deadlock on stopping threads
+	  (patch from Jean-Francois Panisset <panisset@comcast.net>)
+	- ieee1394io.{h,cc}: cleanup usage of statics and threads
+	- dvgrab.{1,cc,h}, filehandler.{cc,h}: added --csize and --cmincutsize opts.
+	  (patch from Pierre Marc Dumuid <pierre.dumuid@student.adelaide.edu.au>)
+
+
+----- v1.5 released -----
+
+2004-01-14  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc: bugfix --every option
+                                      
+2004-01-06  Dan Dennedy <dan@dennedy.org>
+	- riff.h: 64bit OS fix.
+
+2003-12-29  Dan Dennedy <dan@dennedy.org>
+	- filehandler.cc, dvgrab.cc: bugfix autosplit first frame of new recording
+	  appearing as last frame of previous file (DVGRAB-20).
+	- dvgrab.cc: bugfix type 2 AVI audio stream frequency setting when
+	  starting capture from non-playing state.
+	- dvgrab.cc: enhanced autosplit by checking timecode continuity (DVGRAB-2).
+
+2003-12-27  Arne Schirmacher <arne@schirmacher.de>
+        - bugfix broken file when file size was between 1008 and 1024 MByte and 
+          OpenDML was not turned on (DVGRAB-17, patch from Andrew Church)
+        - bugfix file size displayed was always xxx.00 MB (DVGRAB-19, patch from 
+          Andrew Church)
+
+2003-12-09  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.cc: revise AV/C Record mode to never issue a record command
+	  on AVC::Play or AVC::Pause.
+	- filehandler.cc: bugfix notification of capture file on autosplit.
+	- dvgrab.1: bugfix to remove erroneous short option -i on --noavc.
+
+2003-11-24  Dan Dennedy <dan@dennedy.org>
+	- ieee1394io.cc, dvgrab.cc: make camera (AV/C Record) mode work correctly
+	  (toggle record / pause).
+
+----- v1.4 released -----
+
+2003-11-16  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc:: in startCapture() check g_done when waiting for initial
+	  frame to allow interruption.
+	- all: remove use of deprecated strstream, using sstream and ostringstream.
+	- all: fixup pretty make target and run against all code to reformat.
+	- configure.in: bump version
+
+2003-11-09  Dan Dennedy <dan@dennedy.org>
+	- frame.cc: bugfix speed detection on DVCPRO (SMPTE 314M)
+	- avi.cc: remove addition of JUNK chunks in the MOVI list to
+	  reduce memory overhead of RIFF Directory and reduce file sizes.
+
+2003-10-13  Dan Dennedy <dan@dennedy.org>
+	- bugfix parsing new boolean options --stdin and --noavc if last on
+	  command line.
+	- bugfix sigint handling
+	- added --guid option to select device.
+	- make --noavc not do bus probes if not necessary.
+	- make arg to --dv1394 optional for use with devfs.
+
+2003-10-09  Dan Dennedy <dan@dennedy.org>
+	- dvgrab.cc, dvgrab.1: make default --frames = 0, document 0 is unlimited,
+	  fix documentation of SMIL time (.ms optional
+	- dvgrab.cc: make opendml default off, ring bell on frame drop
+
+2003-10-08  Dan Dennedy <dan@dennedy.org>
+	- added option --noavc to disable use of any AV/C.
+
+2003-10-07  Dan Dennedy <dan@dennedy.org>
+	- make --duration option work with piped output too.
+
+2003-09-26  Dan Dennedy <dan@dennedy.org>
+	- require option --stdin to read from a pipe.
+
+----- v1.3 released -----
+
+2003-09-26  Dan Dennedy <dan@dennedy.org>
+	- added support for saving raw DV with .dif extension for MainActor5.
+	- added support for reading raw DV on stdin instead of 1394 in non-
+	  interactive mode.
+	- added --duration option with SMIL time value parser.
+	- updated man page.
+
+2003-09-17  Dan Dennedy <dan@dennedy.org>
+	- added interactive mode with AV/C control
+	- send AV/C play prior to capture on non-interactive capture
+	- make dv2 default format
+	- simultaneous capture and rawdv on stdout
+	- automatically discover camera on any port (overridden via --card)
+	- bump version to 1.3
+
+2003-04-21  Dan Dennedy <dan@dennedy.org>
+	- Applied patch from Daniel Kobras with some changes. Return success/failure
+	  on AVI and FileHandler WriteFrame methods. Automatically enable OpenDML
+	  feature if --size >1GB or --size = 0 (unlimited).
+
+2003-02-22  Dan Dennedy <dan@dennedy.org>
+	- added JPEG overwriting mode (--jpeg-overwrite)
+	  (update the same jpeg instead of seqentially numbering them).
+	- added raw DV stdout (base filename = '-') mode
+	- updated AVI code from Kino 0.6.4.
+	- bugfix segfault on dv1394 buffer underrun
+	- bump version to 1.2
+
+2003-02-06  Dan Dennedy <dan@dennedy.org>
+	- disable processing of jpeg options when not compile with libdv and jpeglib.
+
+Changes in version 1.1b4 by Dan Dennedy
+	- added JPEG output with deinterlace and scaling
+	- bugfix an AVI write bug
+	- bugfix dv1394 capture on PAL
+
+Changes in version 1.1b3 by Dan Dennedy
+
+	- pickup improved AVI classes from Kino.
+	- pickup FileHandler class from Kino to unify operation
+	  and features across formats. 
+	- raw format always creates consistent bytes-per-frame files 
+	  even if there is a dropped packet.
+	- detect libdv and use it for audio extraction and metadata
+	- detect libdv/dv1394.h to enable support for dv1394 (--dv1394)
+	- split on a max file size (--size)
+	- do not overwrite existing files.
+	- detect libquicktime and add quicktime file support (--format qt).
+	- change --index option to --opendml for dv2 format only.
+	  dv1 always only contains large index.
+	  dv2 contains only small index.
+	  dv2+opendml contains both small and large index.
+	- verified compilation on gcc 3.2.
+	
+
+Changes in version 1.1b2
+
+	- more work on writing large files
+
+
+Changes in version 1.1b1
+
+	- writes files larger than 1 GByte. Currently only
+	  with --format dv1 files.
+
+	- lots of code refactoring
+
+
+Changes in version 1.01
+
+	- PAL/NTSC detection improved
+
+	- minor changes to compile with g++ 3.0 (contributed by
+	  Daniel Kobras)
+
+	- buffer space for frames doubled: now 100 frames instead
+	  of 50 (about 3-4 secs, 16 MByte RAM total)
+
+	- bugfix: dvgrab will now reliably close the current
+	  AVI file when aborted by ctrl-c (contributed by Glen
+	  Nakamura)
+
+
+Changes in version 1.0
+
+	- adapted to libraw 0.9
+
+	- packet assemble code modified - some camcorders send
+	  only 492 bytes instead of 496
+
+
+Changes in version 0.99
+
+	- fixed a bug that caused dvgrab to crash when grabbing very
+	  big files in AVI Type 2 format and NTSC mode
+
+	- fixed the incorrect size of files in raw format (they always
+	  had an extra 480 bytes)
+
+	- fixed exception thrown when writing a 0 frames file
+
+	- automake and debian files provided by Daniel Kobras
+
+
+Changes in version 0.89:
+
+	- added the raw1394_stop_iso_rcv call in the close routines
+
+
+Changes in version 0.88:
+
+	- support for 12 bit audio in AVI Type 2 files (courtesy
+	  Mike Pieper)
+
+
+Changes in version 0.87:
+
+	- new feature (courtesy Stephane Gourichon): there is now a
+	  parameter that allows to save every n-th frame only. Great
+	  for monitoring purposes or when you need a rough overview of
+	  the contents of a tape.
+
+	- Type 2 audio has been slightly improved. Still no 12-bit
+	  audio, but I'm getting close.
+
+	- refactoring and cleanup of the code.
+
+	- a few bug fixes: the --format raw mode now works again.
+
+
+Changes in version 0.86:
+
+	- some improvements in the Type 2 AVI audio code. Many
+	  camcorders send audio data which is not defined in my 314m
+	  specification, which caused clicks and distortions, because
+	  the audio data was left out.
+	  If you have extensive audio error messages, your camcorder
+	  is using an unsupported audio mode, such as 12 bit audio data.
+
+	- the --testmode parameter reads DV data from a testdata.raw
+	  file created previously with the --format test parameter. No
+	  camcorder is required.
+
+
+Changes in version 0.85:
+
+	- handling of additional file formats: 
+		--format raw
+		--format test
+
+
+Changes in version 0.84:
+
+	- major rewrite. dvgrab now uses a separate thread for
+	  handling the ieee1394 interface. This improves the behavior
+	  under load conditions very much.
+
+
+Changes in version 0.83:
+
+	- there is now audio support for --format dv2 AVIs.
+	  Currently only 16 bit 48 kHz sound is supported.
+
+
+Changes in version 0.82:
+
+	- incorrect audio speed value fixed, overflow error for long
+	  Type 2 AVIs fixed.
+
+	- Added support for the --format raw data format.
+	  This is just the raw DV data (120000 bytes for each NTSC
+	  frame or 144000 bytes for each PAL frame) written to a
+	  file. Can be used with the playdv program from the libdv
+	  project.
+
+
+Changes in version 0.81:
+
+	- fixed a bug that prevented Type 1 AVIs from playing with
+	  some players.
+
+
+Changes in version 0.8:
+
+	- the program can now write Type 1 and Type 2 DV AVI files.
+	  The difference is that Type 1 contains only one data stream
+	  which has audio and video data interleaved, whereas Type 2
+	  AVIs contain an additional audio stream. Since the video
+	  stream still has the audio data interleaved, this is some
+	  waste of disk space, but MainActor can't read Type 1 files
+	  so I had to add support for this other format too.
+
+	  Note that this version currently writes empty audio tracks.
+	  This means: no sound, but at least it loads nicely into
+	  MainActor.
+
+	  A free demo version of MainActor can be downloaded from:
+
+	  http://www.mainconcept.com 
+
+	- Because of the increasing number of supported file formats
+	  I have changed the option for selecting them.
+
+	  To write MainActor compatible AVI files use this command:
+
+	  dvgrab --format dv2 outfile
+
+
+Changes in version 0.7:
+
+	- the previous algorithm for assembling the data packets did
+	  not work for some camcorders. I rewrote it and the new
+	  algorithm explicitly calculates the address in the frame
+	  buffer for each data packet.
+
+	- the program attempts to auto-detect NTSC and PAL format.
+	  The --pal or --ntsc command line parameter is no longer
+	  mandantory, but it will override the auto-detect feature if
+	  applied. Use them if the auto-detect feature doesnt work
+	  for you.
+
+	- The --timestamp parameter will put the date and time of the
+	  recording into the AVI file name. If it doesnt do that,
+	  dvgrab cant find any date and time related packages in the
+	  DV data.	  
+
+	- I included the little utilities riffdump (prints out the 
+	  structure of an arbitrary AVI file) and rawdump (prints
+	  out an ASCII dump of a file created with the --raw
+	  option)
+
+
+Changes in version 0.6:
+
+	- switched to C++ code. The reason is that C++ provides the
+	  exception mechanism, which I use for a more reasonable
+	  error reporting.
+	  Also the whole concept of the RIFF/AVI file structure leads
+	  to an object oriented approach.
+
+	- The program has now an auto-split function (see
+	  dvgrab --help): It will start a new file whenever (1) the
+	  file size approaches 2 GByte (exceeds 0x70000000 bytes, to
+	  be specific), (2) the frame count is exceeded, or (3) the
+	  recording of a new scene is detected. The program will loop
+	  forever until you press CTRL-C. The current AVI file will be
+	  properly closed, so you dont lose any data (at least this
+	  is the plan).
+
+	- Closing the file is now reasonably fast.
+
+	- there is some visual feedback if the device driver drops
+	  data.
+
+
+Changes in version 0.5:
+
+	- implemented the extended AVI file format which allows for
+	  files > 1 GByte. Note that Linux is currently still limited
+	  to a maximum file size of 2 GByte, which corresponds to
+	  approx. 14500 frames for PAL format or 17500 frames for
+	  NTSC format.
+
+	- more comments in the source code  
+
+
+Changes in version 0.4:
+
+	- implemented the NTSC file format.
+
+	- there is now an error handler which intercepts the signals
+	  1, 2, 3 and 15 and attempts to properly close the AVI
+	  file. So you can safely press CTRL-C to stop capturing
+	  without losing the data saved so far.
+
+
+Changes in version 0.3:
+
+	- implemented the raw capturing mode, wich simply saves
+	  the raw DV data to a file. Useful for analyzing the data.
+
+	- tested with files up to 2000 frames (288 MByte)
+
+
+Changes in version 0.2:
+
+	- a basic set of command line options. 
+	  Run 'dvgrab --help' for a list.
+
+	- more error checking
+
+	- more comments
+
+	- tested with the latest ohci driver
+	  (no changes were necessary though)
+
+Changes in version 0.1:
+
+	- first version

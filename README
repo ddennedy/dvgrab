@@ -1,0 +1,25 @@
+dvgrab
+(C) 2000-2004 Arne Schirmacher <dvgrab@schirmacher.de>
+(C) 2002-2008 Dan Dennedy <dan@dennedy.org>
+(C) 2007 Dan Streetman <ddstreet@ieee.org>
+
+dvgrab website: http://www.kinodv.org/
+dvgrab cvs: http://sourceforge.net/projects/kino/
+
+To use the program, turn on the camera, press play, and run the program:
+
+dvgrab --frames 200 myfilm-
+
+If you have properly configured your kernel and your ieee1394 device
+drivers, you should end up with about 30 MByte of DV image data nicely
+packed in a file myfilm-001.avi (digits and extension automatically
+appended), which can be displayed with the Microsoft Media Player or a
+similar program (remember to install the required DV codecs, software
+should be included with your hardware).
+
+Read the man page for more documentation or 'dvgrab --help'.
+Please submit bug reports, fixes, or suggestions to
+http://sourceforge.net/tracker/?atid=114103&group_id=14103
+or access the discussion forum at
+http://www.kinodv.org/
+Be sure to read the NEWS file for very helpful release notes.

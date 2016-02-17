@@ -1,0 +1,21 @@
+Dan Dennedy <dan@dennedy.org>
+Dan Streetman <ddstreet@ieee.org>
+Arne Schirmacher <dvgrab@schirmacher.de>
+
+Contributors:
+
+Andy (http://www.videox.net/)
+Stephane Gourichon
+Daniel Kobras <kobras@debian.org>
+Alastair Mayer <alastair@ajwm.net>
+Mike Piper
+Glen Nakamura
+Pierre Marc Dumuid <pierre.dumuid@student.adelaide.edu.au>
+	- csize and cmincutsize options
+Frederik V. <freqmod@gmail.com>
+	- help with linux-uvc (uvcvideo/V4L2) integration
+Lars Täuber <lars.taeuber@gmx.net>
+	- jvc-p25 option
+Pelayo Bernedo <bernedo@freenet.de>
+	- srt (subtitle output)
+	- autosplit on recording date/time gap

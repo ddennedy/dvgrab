@@ -1,0 +1,5 @@
+mpeg2-ts support
+
+Some form of positioning, such that dvgrab waits for a given timecode
+or date/time stamp before grabbing
+batch capture
