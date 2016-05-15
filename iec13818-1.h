@@ -42,7 +42,7 @@
 #define BCD(c) ( ((((c) >> 4) & 0x0f) * 10) + ((c) & 0x0f) )
 
 #define TOBYTES( n ) ( ( n + 7 ) / 8 )
-static char bitmask[8] = { 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff };
+static unsigned char bitmask[8] = { 0x01, 0x03, 0x07, 0x0f, 0x1f, 0x3f, 0x7f, 0xff };
 #define GETBITS( offset, len ) do { \
 	unsigned long value = 0; \
 	while ( len > 0 ) \
