@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_PREREQ(2.52)
-AC_INIT(dvgrab, 3.5, http://sourceforge.net/tracker/?atid=114103&group_id=14103)
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AC_PREREQ(2.69)
+AC_INIT(dvgrab, 3.5)
+AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
