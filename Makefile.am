@@ -14,7 +14,7 @@ dvgrab_SOURCES = affine.h avi.cc avi.h dvframe.cc dvframe.h dvgrab.cc dvgrab.h \
 	riff.h smiltime.cc smiltime.h stringutils.cc stringutils.h v4l2reader.h v4l2reader.cc \
 	srt.h srt.cc
 
-INCLUDES =	\
+AM_CPPFLAGS =	\
 	@LIBRAW1394_CFLAGS@ \
 	@LIBAVC1394_CFLAGS@ \
 	@LIBIEC61883_CFLAGS@ \
