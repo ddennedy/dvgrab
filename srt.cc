@@ -173,7 +173,6 @@ void SubtitleWriter::writeSubtitleCode()
 		<< lastMinute << "\n\n";
 		os_tc.flush();
 	}
-	titleNumber++;
 }
 
 void SubtitleWriter::addRecordingDate ( struct tm &rd, const TimeCode &tc )
