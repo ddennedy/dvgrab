@@ -29,6 +29,8 @@
 #include "raw1394util.h"
 
 #define MOTDCT_SPEC_ID    0x00005068
+#define DVMCDA1_VENDOR_ID 0x00080046
+#define DVMCDA1_MODEL_ID  0x00fa0000
 
 
 /** Open the raw1394 device and get a handle.
@@ -150,7 +152,9 @@ int discoverAVC( int* port, octlet_t* guid )
 				}
 				if ( ( ( rom1394_get_node_type( &rom_dir ) == ROM1394_NODE_TYPE_AVC ) &&
 				         avc1394_check_subunit_type( handle, i, AVC1394_SUBUNIT_TYPE_VCR ) ) ||
-				       ( rom_dir.unit_spec_id == MOTDCT_SPEC_ID ) )
+				       ( rom_dir.unit_spec_id == MOTDCT_SPEC_ID ) ||
+				       ( rom_dir.vendor_id == DVMCDA1_VENDOR_ID &&
+				         rom_dir.model_id == DVMCDA1_MODEL_ID ) )
 				{
 					rom1394_free_directory( &rom_dir );
 					octlet_t my_guid, *pguid = ( *guid == 1 )? guid : &my_guid;
