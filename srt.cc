@@ -28,7 +28,7 @@
 
 SubtitleWriter::SubtitleWriter() :
 		frameRate( 0.0 ),
-		lastYear( 0 ), lastMonth( 0 ), lastDay( 0 ), lastHour( 0 ), lastMinute( 0 ),
+		lastYear( 0 ), lastMonth( 0 ), lastDay( 0 ), lastHour( 0 ), lastMinute( 0 ), lastSecond( 0 ),
 		frameCount( 0 ), lastFrameWritten( 0 ), titleNumber( 1 ), timeCodeValid( false )
 {}
 
@@ -62,7 +62,7 @@ void SubtitleWriter::newFile ( const char *videoName )
 	os_tc.close();
 
 	frameRate = 0.0;
-	lastYear = lastMonth = lastDay = lastHour = lastMinute = 0;
+	lastYear = lastMonth = lastDay = lastHour = lastMinute = lastSecond = 0;
 	frameCount = 0;
 	lastFrameWritten = 0;
 	titleNumber = 1;
@@ -146,7 +146,8 @@ void SubtitleWriter::writeSubtitleFrame()
 		os_fr << lastYear << '-' << std::setw( 2 ) << lastMonth
 		<< '-' << std::setw( 2 ) << lastDay << ' '
 		<< std::setw( 2 ) << lastHour << ':' << std::setw( 2 )
-		<< lastMinute << "\n\n";
+		<< lastMinute << ':' << std::setw( 2 )
+		<< lastSecond << "\n\n";
 		os_fr.flush();
 	}
 
@@ -170,14 +171,15 @@ void SubtitleWriter::writeSubtitleCode()
 		os_tc << lastYear << '-' << std::setw( 2 ) << lastMonth
 		<< '-' << std::setw( 2 ) << lastDay << ' '
 		<< std::setw( 2 ) << lastHour << ':' << std::setw( 2 )
-		<< lastMinute << "\n\n";
+		<< lastMinute << ':' << std::setw( 2 )
+		<< lastSecond << "\n\n";
 		os_tc.flush();
 	}
 }
 
 void SubtitleWriter::addRecordingDate ( struct tm &rd, const TimeCode &tc )
 {
-	int y, m, d, hh, mm;
+	int y, m, d, hh, mm, ss;
 
 	++frameCount;
 	y = rd.tm_year + 1900;
@@ -185,9 +187,10 @@ void SubtitleWriter::addRecordingDate ( struct tm &rd, const TimeCode &tc )
 	d = rd.tm_mday;
 	hh = rd.tm_hour;
 	mm = rd.tm_min;
+	ss = rd.tm_sec;
 
 	if ( y != lastYear || m != lastMonth || d != lastDay ||
-	        hh != lastHour || mm != lastMinute )
+	        hh != lastHour || mm != lastMinute || ss != lastSecond )
 	{
 		// We must write a new subtitle.
 		if ( lastYear != 0 )
@@ -202,6 +205,7 @@ void SubtitleWriter::addRecordingDate ( struct tm &rd, const TimeCode &tc )
 		lastDay = d;
 		lastHour = hh;
 		lastMinute = mm;
+		lastSecond = ss;
 	}
 	codeNow = tc;
 	if ( !timeCodeValid )
