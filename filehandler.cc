@@ -440,8 +440,18 @@ bool FileHandler::WriteFrame( Frame *frame )
 			{
 				sb << stimestamp.str();
 			}
+			string baseName = sb.str();
 			sb << GetExtension() << ends;
 			filename = sb.str();
+			struct stat stats;
+			int idx = 0;
+			while( stat( filename.c_str(), &stats ) == 0 )
+			{
+				ostringstream sb2;
+				sb2 << baseName << '_' << setfill( '0' ) << setw( 3 ) << idx++
+					<< GetExtension() << ends;
+				filename = sb2.str();
+			}
 		}
 		else
 		{
