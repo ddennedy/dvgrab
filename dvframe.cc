@@ -422,7 +422,7 @@ bool DVFrame::GetRecordingDate( struct tm &recDate )
 	month = ( month & 0xf ) + 10 * ( ( month >> 4 ) & 0x1 );
 	day = ( day & 0xf ) + 10 * ( ( day >> 4 ) & 0x3 );
 
-	if ( year < 25 )
+	if ( year < 95 )
 		year += 2000;
 	else
 		year += 1900;
