@@ -30,7 +30,7 @@ class SubtitleWriter
 	float frameRate;
 
 	int lastYear, lastMonth, lastDay;
-	int lastHour, lastMinute;
+	int lastHour, lastMinute, lastSecond;
 	int frameCount, lastFrameWritten;
 	TimeCode codeNow, nextCodeToWrite;
 	int titleNumber;
