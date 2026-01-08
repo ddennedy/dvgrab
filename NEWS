@@ -1,5 +1,12 @@
 dvgrab R E L E A S E   N O T E S
 
+v3.5.1 
+* Bugfix
+* throws away badly formed frames longer than standard frame lengths due to 
+  readback data or timestamp or other corruption
+* previous version would crash the program, this version plows ahead, albeit 
+  with some data loss
+
 -------
 v3.5
 -------

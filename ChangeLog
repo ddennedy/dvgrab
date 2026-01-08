@@ -4,6 +4,13 @@ dvgrab ChangeLog
 
 SEE the NEWS file for RELEASE NOTES!
 
+----- v3.5.1 bug fix
+	- throws away malformed frames, too long for the memcopy operation. 
+	  Saves program from crashing, at cost of some loss of corrputed frames
+      but keeps plowing ahead
+	- cross compiled my version with C++11, on a Mac, for a Linux Intel iMac
+	  with FireWire ports - yee haw
+
 ----- v3.5 released -----
 
 2009-09-07  Dan Dennedy <dan@dennegy.org>

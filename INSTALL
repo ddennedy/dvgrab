@@ -64,6 +64,7 @@ this:
 Or on systems that have the `env' program, you can do it like this:
      env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
 
+
 Compiling For Multiple Architectures
 ====================================
 
@@ -80,6 +81,63 @@ variable, you have to compile the package for one architecture at a time
 in the source code directory.  After you have installed the package for
 one architecture, use `make distclean' before reconfiguring for another
 architecture.
+
+
+Docker Cross Compiling for Intel Fedora 43:
+===========================================
+Dockerfile:
+   # Force Intel x86_64 platform
+   FROM --platform=linux/amd64 fedora:43
+   
+   # Install build dependencies
+   RUN dnf install -y \
+       gcc gcc-c++ make autoconf automake \
+       libraw1394-devel libiec61883-devel libavc1394-devel \
+       libdv-devel libjpeg-devel \
+       file \
+       && dnf clean all
+   
+   WORKDIR /build
+   COPY . .
+   
+   # Generate configure script
+   RUN autoreconf -fi
+   
+   # Configure explicitly for x86_64
+   RUN ./configure \
+       --host=x86_64-linux-gnu \
+       CFLAGS="-g -O2 -march=x86-64 -mtune=generic" \
+       CXXFLAGS="-g -O2 -std=c++11 -march=x86-64 -mtune=generic"
+   
+   # Build
+   RUN make -j$(nproc)
+   
+   # Verify the binary architecture
+   RUN file dvgrab
+   
+   CMD ["cat","/dvgrab"]
+
+
+Docker Commands:
+
+   docker buildx build --platform linux/amd64 -t dvgrab-builder .
+   docker create --name extract_container dvgrab-builder
+   docker volume ls
+   docker cp extract_container:/build/dvgrab dvgrab
+   docker rm extract_container
+
+Cross compile library:
+   'dvgrab' is the executable
+   The target Linux Intel machine probably needs to have libdv explicitly 
+   installed (since it wasn't built and installed there):
+   
+      $ sudo dnf install libdv.x86_64
+
+   Since this is manual installation into the executable $PATH the rest of the installation 
+   references on this page are not considered. Follow the regular instructions if built
+   by regular native compilation. The source is identical except for the memcopy patch.
+
+
 
 Installation Names
 ==================
