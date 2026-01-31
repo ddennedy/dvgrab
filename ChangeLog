@@ -2,14 +2,9 @@ dvgrab ChangeLog
 (c) 2000-2003 Arne Schirmacher dvgrab@schirmacher.de
 (c) 2002-2009 Dan Dennedy <dan@dennedy.org>
 
-SEE the NEWS file for RELEASE NOTES!
+See the git history for anything newer than 3.5. This file is no longer maintained.
 
------ v3.5.1 bug fix
-	- throws away malformed frames, too long for the memcopy operation. 
-	  Saves program from crashing, at cost of some loss of corrputed frames
-      but keeps plowing ahead
-	- cross compiled my version with C++11, on a Mac, for a Linux Intel iMac
-	  with FireWire ports - yee haw
+SEE the NEWS file for RELEASE NOTES!
 
 ----- v3.5 released -----
 
