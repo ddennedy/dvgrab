@@ -1,11 +1,17 @@
 dvgrab R E L E A S E   N O T E S
 
+-------
 v3.5.1 
-* Bugfix
-* throws away badly formed frames longer than standard frame lengths due to 
-  readback data or timestamp or other corruption
-* previous version would crash the program, this version plows ahead, albeit 
-  with some data loss
+-------
+
+* Fix build with GCC 6.1.0
+* autotools fixes
+* Fix numbering of subtitle entrie
+* Add special case in discoverAVC to recognize Sony DVMC-DA1 as a video source
+* fix: Don't overwrite files in timecode/timestamp/timsys mode
+* Fix footage captured from 2025 onwards is incorrectly displayed as 1925
+* Include recording seconds in SRT file
+* Fixed crash with corrupt DV data by discarding
 
 -------
 v3.5
