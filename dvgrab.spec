@@ -1,7 +1,7 @@
 # spec file to create a RPM package (rpm -ba dvgrab.spec)
 
 Name: 		dvgrab
-Version: 	2.1
+Version: 	3.5.2
 Release: 	1
 Packager:	dan@dennedy.org
 Copyright: 	2000-2026, Arne Schirmacher, Charles Yates, Dan Dennedy (GPL)
