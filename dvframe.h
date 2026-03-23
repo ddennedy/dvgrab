@@ -1,6 +1,7 @@
 /*
 * dvframe.h -- utilities for process DV-format frames
 * Copyright (C) 2000 Arne Schirmacher <arne@schirmacher.de>
+* Copyright (C) 2003-2026 Dan Dennedy <dan@dennedy.org>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -63,11 +64,7 @@ public:
 	struct tm	recDate;
 
 	VideoInfo();
-
-	//    string GetTimeCodeString();
-	//    string GetRecDateString();
-}
-;
+};
 
 
 class DVFrame : public Frame
@@ -109,7 +106,8 @@ public:
 	bool GetAAUXPack( int packNum, Pack &pack );
 	bool GetAudioInfo( AudioInfo &info );
 	bool GetVideoInfo( VideoInfo &info );
-	int GetFrameSize( void );
+	static int FrameSize( const unsigned char *buf, int len );
+	int GetExpectedSize( void );
 	bool IsPAL( void );
 	int ExtractAudio( void *sound );
 	void ExtractHeader( void );
