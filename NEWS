@@ -1,9 +1,14 @@
 dvgrab R E L E A S E   N O T E S
 
 -------
+v3.5.2
+-------
+* Fixed capturing PAL DV
+* Updated links to web site and source repo
+
+-------
 v3.5.1 
 -------
-
 * Fix build with GCC 6.1.0
 * autotools fixes
 * Fix numbering of subtitle entrie

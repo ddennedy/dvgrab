@@ -1,7 +1,7 @@
 /*
 * filehandler.cc -- saving DV data into different file formats
 * Copyright (C) 2000 Arne Schirmacher <arne@schirmacher.de>
-* Raw DV, JPEG, and Quicktime portions Copyright (C) 2003-2008 Dan Dennedy <dan@dennedy.org>
+* Raw DV, JPEG, and Quicktime portions Copyright (C) 2003-2026 Dan Dennedy <dan@dennedy.org>
 * Portions of Quicktime code borrowed from Arthur Peters' dv_utils.
 *
 * This program is free software; you can redistribute it and/or modify
@@ -956,7 +956,7 @@ int QtHandler::Write( Frame *f )
 		if ( ( tc.frame + frameOffset ) % 5 )
 		{
 			result = quicktime_write_frame( fd, const_cast<unsigned char*>( frame->data ),
-			                                frame->GetFrameSize(), 0 );
+			                                frame->GetExpectedSize(), 0 );
 		}
 		else
 		{
@@ -966,7 +966,7 @@ int QtHandler::Write( Frame *f )
 	else
 	{
 		result = quicktime_write_frame( fd, const_cast<unsigned char*>( frame->data ),
-		                                frame->GetFrameSize(), 0 );
+		                                frame->GetExpectedSize(), 0 );
 	}
  
 	if ( channels > 0 )

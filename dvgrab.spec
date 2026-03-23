@@ -1,13 +1,13 @@
 # spec file to create a RPM package (rpm -ba dvgrab.spec)
 
 Name: 		dvgrab
-Version: 	2.1
+Version: 	3.5.2
 Release: 	1
 Packager:	dan@dennedy.org
-Copyright: 	2000-2005, Arne Schirmacher, Charles Yates, Dan Dennedy (GPL)
+Copyright: 	2000-2026, Arne Schirmacher, Charles Yates, Dan Dennedy (GPL)
 Group: 		Utilities/System
 Source0: 	dvgrab-%{version}.tar.gz
-URL: 		http://www.kinodv.org/
+URL: 		https://github.com/ddennedy/dvgrab
 Summary: 	A program to copy Digital Video data from a DV camcorder
 Requires:	libraw1394 >= 1.2.0
 Requires:	libiec1394 >= 1.0.0

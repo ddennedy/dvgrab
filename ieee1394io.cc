@@ -1,7 +1,7 @@
 /*
 * ieee1394io.cc -- asynchronously grabbing DV data
 * Copyright (C) 2000 Arne Schirmacher <arne@schirmacher.de>
-* Copyright (C) 2003-2009 Dan Dennedy <dan@dennedy.org>
+* Copyright (C) 2003-2026 Dan Dennedy <dan@dennedy.org>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -537,29 +537,30 @@ int iec61883Reader::Handler( unsigned char *data, int length, int dropped )
 		}
 	}
 
-    //  BOUNDS CHECKING FOR DV FRAMES ONLY 
-	if (!currentFrame->IsHDV())
+	if ( !currentFrame->IsHDV() )
 	{
-		int currentLen = currentFrame->GetDataLen();
-		int maxFrameSize = static_cast<DVFrame*>(currentFrame)->GetFrameSize(); // 120000 or 144000
-		
-		if (currentLen + length > maxFrameSize)
+		// For DV, enforce the exact expected frame size
+		// Determine expected size from the DSF bit (data[3] & 0x80) once byte 3 is available:
+		// either already in the accumulation buffer, or arriving in this packet.
+		const int currentLen = currentFrame->GetDataLen();
+		const bool hasHeader = currentLen >= 4;
+		const unsigned char *header = hasHeader ? currentFrame->data : data;
+		const int maxFrameSize = DVFrame::FrameSize( header, hasHeader ? currentLen : length );
+		if ( currentLen + length > maxFrameSize )
 		{
 			// Buffer would overflow - drop this packet and reset frame
-			fprintf(stderr, "ERROR: Frame buffer overflow prevented! "
-					"current=%d, incoming=%d, max=%d\n",
-					currentLen, length, maxFrameSize);
+			fprintf( stderr, "ERROR: Frame buffer overflow prevented! "
+				"current=%d, incoming=%d, max=%d\n",
+				currentLen, length, maxFrameSize );
 			
 			// Reset the frame to prevent corruption
 			currentFrame->Clear();
 			badFrames++;
 			droppedFrames++;
-			
-			// Don't attempt the memcpy
 			return 0;
 		}
 	}
-	
+
 	memcpy( &currentFrame->data[currentFrame->GetDataLen()], data, length );
 	currentFrame->AddDataLen( length );
 

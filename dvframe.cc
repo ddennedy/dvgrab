@@ -1,6 +1,7 @@
 /*
 * dvframe.cc -- utilities for processing DV-format frames
 * Copyright (C) 2000 Arne Schirmacher <arne@schirmacher.de>
+* Copyright (C) 2003-2026 Dan Dennedy <dan@dennedy.org>
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -594,15 +595,33 @@ bool DVFrame::GetVideoInfo( VideoInfo &info )
 }
 
 
+/** Maps the DSF bit in a raw DV header to the expected frame size.
+ 
+    Returns 144000 for PAL (DSF set), 120000 for NTSC (DSF clear).
+    Falls back to 144000 (the largest valid size) when fewer than 4 bytes
+    are available and the format is not yet known.
+ 
+    \param buf pointer to the raw DV data
+    \param len number of bytes available in buf
+    \return expected frame size in bytes */
+
+int DVFrame::FrameSize( const unsigned char *buf, int len )
+{
+	if ( len > 3 )
+		return ( buf[ 3 ] & 0x80 ) ? 144000 : 120000;
+	return 144000;
+}
+
+
 /** gets the size of the frame
  
     Depending on the type (PAL or NTSC) of the frame, the length of the frame is returned 
  
     \return the length of the frame in Bytes */
 
-int DVFrame::GetFrameSize( void )
+int DVFrame::GetExpectedSize( void )
 {
-	return IsPAL() ? 144000 : 120000;
+	return FrameSize( data, GetDataLen() );
 }
 
 
@@ -618,21 +637,20 @@ float DVFrame::GetFrameRate()
 
 /** checks whether the frame is in PAL or NTSC format
  
-    \todo function can't handle "empty" frame
     \return true for PAL frame, false for a NTSC frame
 */
 
 bool DVFrame::IsPAL( void )
 {
-	unsigned char dsf = data[ 3 ] & 0x80;
-	bool pal = ( dsf == 0 ) ? false : true;
-#ifdef HAVE_LIBDV
+	bool pal = FrameSize( data, GetDataLen() ) == 144000;
 
-	if ( !pal )
-	{
-		pal = ( dv_system_50_fields ( decoder ) == 1 ) ? true : pal;
-	}
-#endif
+	/* Cross-check against accumulated frame size when complete: PAL=144000, NTSC=120000 */
+	int len = GetDataLen();
+	if ( len == 144000 )
+		pal = true;
+	else if ( len == 120000 )
+		pal = false;
+
 	return pal;
 }
 
@@ -704,7 +722,7 @@ bool DVFrame::IsNormalSpeed()
 
 bool DVFrame::IsComplete( void )
 {
-	return GetDataLen() == GetFrameSize();
+	return GetDataLen() == GetExpectedSize();
 }
 
 
