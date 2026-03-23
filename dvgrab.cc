@@ -1,6 +1,6 @@
 /*
 * dvgrab.cc -- DVGrab control class
-* Copyright (C) 2003-2009 Dan Dennedy <dan@dennedy.org>
+* Copyright (C) 2003-2026 Dan Dennedy <dan@dennedy.org>
 * Major rewrite of code based upon older versions of dvgrab by Arne Schirmacher
 *    and some Kino code also contributed by Charles Yates.
 *
@@ -251,8 +251,7 @@ void DVgrab::print_help()
 	cerr << "  -24pa                remove 2:3:3:2 pulldown for 24p Advanced (Quicktime Only)" << endl;
 #endif
 	cerr << endl;
-	cerr << "Check out the dvgrab website for the latest version, news and other software:" << endl;
-	cerr << "http://www.kinodv.org/" << endl << endl;
+	cerr << "https://github.com/ddennedy/dvgrab" << endl << endl;
 }
 
 void DVgrab::set_file_format( char *format )

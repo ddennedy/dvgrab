@@ -1,10 +1,9 @@
 dvgrab
 (C) 2000-2004 Arne Schirmacher <dvgrab@schirmacher.de>
-(C) 2002-2008 Dan Dennedy <dan@dennedy.org>
+(C) 2002-2026 Dan Dennedy <dan@dennedy.org>
 (C) 2007 Dan Streetman <ddstreet@ieee.org>
 
-dvgrab website: http://www.kinodv.org/
-dvgrab cvs: http://sourceforge.net/projects/kino/
+dvgrab website: https://github.com/ddennedy/dvgrab
 
 To use the program, turn on the camera, press play, and run the program:
 
@@ -19,7 +18,5 @@ should be included with your hardware).
 
 Read the man page for more documentation or 'dvgrab --help'.
 Please submit bug reports, fixes, or suggestions to
-http://sourceforge.net/tracker/?atid=114103&group_id=14103
-or access the discussion forum at
-http://www.kinodv.org/
+https://github.com/ddennedy/dvgrab
 Be sure to read the NEWS file for very helpful release notes.
