@@ -1,0 +1,47 @@
+name: Build for CachyOS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container:
+      image: cachyos/cachyos:latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm --needed base-devel git libraw1394 libavc1394 libiec61883 libdv libjpeg-turbo
+
+      - name: Create non-root build user
+        run: useradd -m builduser
+
+      - name: Prepare source tarball and PKGBUILD
+        run: |
+          pkgver=$(sed -n 's/^pkgver=//p' PKGBUILD)
+          cp -r . "/tmp/dvgrab-${pkgver}"
+          tar czf "/home/builduser/dvgrab-${pkgver}.tar.gz" -C /tmp "dvgrab-${pkgver}"
+          cp PKGBUILD /home/builduser/
+          # Update the checksum in the copied PKGBUILD to match the local tarball
+          sha256=$(sha256sum "/home/builduser/dvgrab-${pkgver}.tar.gz" | awk '{print $1}')
+          sed -i "s/sha256sums=.*/sha256sums=('${sha256}')/" /home/builduser/PKGBUILD
+          chown -R builduser:builduser /home/builduser/
+
+      - name: Build package with makepkg
+        run: su builduser -c "cd /home/builduser && makepkg --noconfirm"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dvgrab-cachyos-package
+          path: /home/builduser/*.pkg.tar.zst
